@@ -1,0 +1,65 @@
+Read this first
+===================================================
+Script/Command is in the /* */ (and not behind the #) otherwise is an advice 
+
+Setup Environment on AWS EC2
+---------------------------------------------------
+First you need to access EC2, to do this you can following this commannd
+ 	/* 	ssh -i "(put your key file name here)" ec2-user@ec2-xx-xx-xx-xx.xx-xxxxxxx-x.compute.amazonaws.com 	*/
+Note : x is your config, you can checked your config by going to AWS EC2 
+
+Once you can access to EC2 then you can do the setup down below
+
+ 	/*
+ 	 	
+ 	 	wget https://downloads.apache.org/kafka/3.3.1/kafka_2.12-3.3.1.tgz #To download kafka on Aws EC2 
+ 	 	tar -xvf kafka_2.12-3.3.1.tgz #Uncompressed file
+ 	 	sudo yum install java-1.8.0-openjdk #Install Java on Aws EC2
+ 	 	java -version #To check Java version 
+ 	*/
+
+Before doning the each of the following session, you need to ensure that you're in kafka_2.12-3.3.1 directory
+To enter this directory you just enter this command. 
+ 	/* 	cd kafka_2.12-3.3.1 	*/
+
+In the following session you need to duplicate your terminal (Excepted Create topic session).
+Hence you need to open another terminal and access kafka_2.12-3.3.1 directory again then you can do a following command in each session
+
+
+Start Zoo-keeper
+---------------------------------------------------
+ 	/* 	bin/zookeeper-server-start.sh config/zookeeper.properties 	*/
+to stop the Zoo-keeper is to use this command
+ 	/* 	sudo bin/zookeeper-server-stop.sh 	*/
+
+
+Start Kafka-server
+---------------------------------------------------
+ 	/* 	
+ 	 	bin/kafka-server-start.sh config/server.properties 	
+ 	 	export KAFKA_HEAP_OPTS="-Xmx256M -Xms128M" #Setup storage for server
+ 	*/
+
+To complete step after this you need to change to public IP. Then kafkar server will changed to public server.
+To access config of kafka server you can use the following command to approach kafkar server properties
+
+ 	/*    sudo nano config/server.properties     */
+
+and then change IP to public IP address of EC2
+
+
+Create the topic
+---------------------------------------------------
+ 	/* 	bin/kafka-topics.sh --create --topic (Put the topic name here) --bootstrap-server (Put the Public IP of your EC2 Instance here):9092 --replication-factor 1 --partitions 1 	*/
+This will create topic that use to send data through this topic
+
+Start Producer
+---------------------------------------------------
+ 	/* 	bin/kafka-console-producer.sh --topic (Put the topic name here) --bootstrap-server (Put the Public IP of your EC2 Instance here):9092 	*/
+This will create Producer to send a data through the topic that you selected
+
+Start Consumer
+---------------------------------------------------
+ 	/* 	bin/kafka-console-consumer.sh --topic (Put the topic name here) --bootstrap-server (Put the Public IP of your EC2 Instance):9092 	*/
+This will create Consumer to recieve data that send from Producer
+
